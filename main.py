@@ -110,10 +110,10 @@ def update_author(id):
 
 @app.route("/<id>", methods=['DELETE'])
 def delete_book(id):
-  # try:
+  try:
     return jsonify(db_delete_book(id))
-  # except:
-  #   return jsonify({"error": "could not delete book"})
+  except:
+    return jsonify({"error": "could not delete book"})
 
 """
 End of Part 7 Code
