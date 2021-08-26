@@ -2,8 +2,6 @@ import random
 import os
 from pony.orm import Database, PrimaryKey, Required, sql_debug, db_session
 
-db_password = 'slJ9J1ABhGg1eic3'
-
 db = Database()
 
 class Book(db.Entity):
