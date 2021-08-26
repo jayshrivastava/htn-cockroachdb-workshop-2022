@@ -23,7 +23,7 @@ db_params = dict(provider='sqlite', filename='booksdb.sqlite', create_db=True) #
 
 sql_debug(True)  # Print all generated SQL queries to stdout
 db.bind(**db_params)  # Bind Database object to the real database
-db.generate_mapping(create_tables=True)  # Create tables
+db.generate_mapping(create_tables=True)  # Create tables if they do not exist.
 
 @db_session
 def create_book(title, author, rating, pages):
