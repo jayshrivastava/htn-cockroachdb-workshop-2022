@@ -17,6 +17,6 @@ book2 = {
   'pages': 112
 }
 
-response = requests.post('https://htn-api.jayantsh.repl.co/', json = book1)
+response = requests.post('http://htn-api.jayantsh.repl.co/', json = book1)
 
 print(json.dumps(response.json(), indent=2))
