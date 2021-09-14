@@ -1,4 +1,4 @@
-git import requests
+import requests
 import json
 
 # response = requests.get('http://htn-api.jayantsh.repl.co/')
