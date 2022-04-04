@@ -1,6 +1,6 @@
 ## Intro to API Development
 
-This is the source code for the Backend Web Development workshop for Hack the North 2021. It is a Book Collection API made with Python, Flask, and SQLite.
+This is the source code for the Backend Web Development workshop for Hack the North 2021. It is a Book Collection API made with Python, Flask, and SQLite (or optionally [CockroachDB Serverless](https://www.cockroachlabs.com/free-tier/)).
 
 VOD: https://www.youtube.com/watch?v=CATP51NSOzA
 
