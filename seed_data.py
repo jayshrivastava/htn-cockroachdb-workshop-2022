@@ -14,11 +14,11 @@ class Book(db.Entity):
 
 # SQLite
 # Store data in a file!
-db_params = dict(provider='sqlite', filename='booksdb.sqlite', create_db=True) # The create_db option will create the file if it does not exist.
+# db_params = dict(provider='sqlite', filename='booksdb.sqlite', create_db=True) # The create_db option will create the file if it does not exist.
 
 # CockroachDB 
 # https://www.cockroachlabs.com/free-tier/
-# db_params = dict(provider='cockroach', user='jayant', host='free-tier.gcp-us-central1.cockroachlabs.cloud', port=26257, database='scaly-deer-3088.defaultdb', password=os.getenv('db_password'))
+db_params = dict(provider='cockroach', user='jayant', host='free-tier11.gcp-us-east1.cockroachlabs.cloud', port=26257, database='sunny-corgi-1777.defaultdb', password='2ch7QTGbD2BJcMZ2v_zcUw')
 # Note: You will need to set the db_password environment variable in repl.it (see https://docs.replit.com/tutorials/08-storing-secrets-and-history). 
 
 sql_debug(True)  # Print all generated SQL queries to stdout
