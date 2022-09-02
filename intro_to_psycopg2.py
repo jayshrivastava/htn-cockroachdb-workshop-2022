@@ -83,8 +83,8 @@ def select_all():
     print('\n')
 
 
-def select_some():
-    cursor.execute("SELECT * FROM courses WHERE credits > 0")
+def select_some_with_params():
+    cursor.execute("SELECT * FROM courses WHERE credits > %s", (0,))
     results = cursor.fetchall()
     print(results)
     print('\n')
@@ -123,5 +123,5 @@ delete_rows()
 alter_table()
 add_course_with_params()
 select_all()
-select_some()
+select_some_with_params()
 drop_tables()
