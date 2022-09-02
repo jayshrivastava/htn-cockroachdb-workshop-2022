@@ -99,9 +99,21 @@ def drop_tables():
     connection.commit()
 
 
-def add_course_with_params(name, code, program, credits):
+def add_course_with_params():
     cursor.execute("INSERT INTO courses VALUES (default, %s, %s, %s, %s)",
-                   (name, code, program, credits))
+                   ("Algorithms", "341", 2, 1))
+
+def add_course_with_named_params():
+  data = {
+    'name': 'Programming for Performance', 
+    'code': '459', 
+    'program': 1,
+    'credits': 1
+  }
+  cursor.execute("INSERT INTO courses VALUES (default, %(name)s, %(code)s, %(program)s, %(credits)s)",
+                   data)
+  
+  
 
 
 create_tables()
@@ -109,7 +121,7 @@ insert_data()
 update_rows()
 delete_rows()
 alter_table()
-add_course_with_params("Algorithms", "341", 2, 1)
+add_course_with_params()
 select_all()
 select_some()
 drop_tables()
