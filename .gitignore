@@ -1,3 +1,4 @@
-booksdb.sqlite
-git.sh
-.replit
+\.replit
+cockroach-v22.1.6.linux-amd64/
+cockroach
+__pycache__/
