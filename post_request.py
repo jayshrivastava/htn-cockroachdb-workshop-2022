@@ -1,22 +1,16 @@
 import requests
 import json
 
-book1 = {
-  'id': 4,
-  'title': '1984',
-  'author': 'George Orwell',
-  'rating': 4.18,
-  'pages': 387
+new_airbnb = {
+  'title': 'Nice Studio by the Water',
+  'name': 'Jay',
+  'neighbourhood': 'Brooklyn',
+  'neighbourhood_group': 'Williamsburg',
+  'verified': True, 
+  'year': 2002
 }
 
-book2 = {
-  'id': 5,
-  'title': 'Lord of the Flies',
-  'author': 'William Golding',
-  'rating': 3.68,
-  'pages': 112
-}
 
-response = requests.post('http://htn-api.jayantsh.repl.co/', json = book1)
+response = requests.post('https://htn-cockroachdb-workshop-2022.jayantsh.repl.co', json = new_airbnb)
 
 print(json.dumps(response.json(), indent=2))

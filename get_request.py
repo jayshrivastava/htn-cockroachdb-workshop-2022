@@ -1,9 +1,14 @@
 import requests
 import json
 
-# response = requests.get('http://htn-api.jayantsh.repl.co/')
-# print(json.dumps(response.json(), indent=2))
-response = requests.get('http://htn-api.jayantsh.repl.co/0')
+# Get all the listings
+response = requests.get('https://htn-cockroachdb-workshop-2022.jayantsh.repl.co')
 print(json.dumps(response.json(), indent=2))
-# response = requests.get('http://htn-api.jayantsh.repl.co/search?max_pages=360&min_rating=4')
+
+# Get one listing using route parameter
+# response = requests.get('https://htn-cockroachdb-workshop-2022.jayantsh.repl.co/1004098')
+# print(json.dumps(response.json(), indent=2))
+
+# Search with query parameters
+# response = requests.get('https://htn-cockroachdb-workshop-2022.jayantsh.repl.co/search?min_year=2008&group=Manhattan')
 # print(json.dumps(response.json(), indent=2))
