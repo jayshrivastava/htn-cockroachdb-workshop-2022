@@ -49,4 +49,3 @@ with open("airbnbs.csv", "r") as f:
             "INSERT INTO airbnbs VALUES (%s, %s, %s, %s, %s, %s, %s)",
             (parts[0], parts[1], parts[5], parts[6], parts[4], parts[3]
              == "verified", parts[14]))
-        connection.commit()
