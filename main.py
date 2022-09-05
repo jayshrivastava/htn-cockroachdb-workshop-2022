@@ -1,214 +1,136 @@
-# Part 2
 from flask import Flask, jsonify, request
-# Part 4
 import json
-# Part 6
 import os
-# Part 7
-import random
-from pony.orm import Database, PrimaryKey, Required, sql_debug, db_session
+import psycopg2
+import psycopg2.extras
 
 # Create a Flask server.
 app = Flask(__name__)
 
+# Create a cursor and initialize psycopg
+user = os.environ["USERNAME"]
+host = os.environ['HOST']
+cluster = os.environ["CLUSTER"]
+password = os.environ["DATABASE_PW"]
+
+connection = psycopg2.connect(user=user,
+                              host=host,
+                              port=26257,
+                              database=f'{cluster}.defaultdb',
+                              password=password,
+                              sslmode='verify-full')
+
+# Set to automatically commit each statement
+connection.set_session(autocommit=True)
+
+cursor = connection.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
 """
-Part 7 - Working with A Database
+CREATE TABLE airbnbs (
+  id INT PRIMARY KEY, 
+  title STRING, 
+  neighbourhood_group STRING, 
+  neighbourhood STRING, 
+  host_name STRING, 
+  verified BOOL, 
+  year INT
+)"
 """
-# Source: https://www.cockroachlabs.com/docs/stable/build-a-python-app-with-cockroachdb-pony.html
-db = Database()
 
-class Book(db.Entity):
-  _table_ = 'books'
-  id = PrimaryKey(int,auto=True)
-  title = Required(str,unique=True)
-  author = Required(str)
-  rating = Required(float)
-  pages = Required(int)
 
-# SQLite
-# Store data in a file!
-db_params = dict(provider='sqlite', filename='booksdb.sqlite', create_db=True) # The create_db option will create the file if it does not exist.
+def db_get_all():
+    cursor.execute('SELECT * FROM airbnbs')
+    results = cursor.fetchall()
+    return results
 
-# CockroachDB 
-# https://www.cockroachlabs.com/free-tier/
-# db_params = dict(provider='cockroach', user='jayant', host='free-tier.gcp-us-central1.cockroachlabs.cloud', port=26257, database='ample-lemur-3072.defaultdb', os.getenv('db_password'))
-# Note: You will need to set the db_password environment variable in repl.it (see https://docs.replit.com/tutorials/08-storing-secrets-and-history). 
 
-sql_debug(True)  # Print all generated SQL queries to stdout
-db.bind(**db_params)  # Bind Database object to the real database
-db.generate_mapping(create_tables=True)  # Create tables
+def db_get_by_id(id):
+    cursor.execute('SELECT * FROM airbnbs WHERE id = %s', (id, ))
+    result = cursor.fetchone()
+    return result
 
-# Helper functions!
-@db_session  # db_session decorator manages the transactions
-def db_create_book(title, author, rating, pages):
-  return Book(title=title, author=author, rating=rating, pages=pages).to_dict()
 
-@db_session
-def db_get_all_books():
-  return [book.to_dict() for book in Book.select()]
+def db_filter_listings(min_year, group):
+    cursor.execute(
+        'SELECT * FROM airbnbs WHERE neighbourhood_group = %s AND year >= %s',
+        (group, min_year))
+    result = cursor.fetchall()
+    return result
 
-@db_session 
-def db_get_book(title, author, rating, pages):
-  return Book(title, author, rating, pages).to_dict() 
 
-@db_session 
-def db_filter_books(max_pages, min_rating):
-  if not max_pages:
-    max_pages = float('inf')
-  if not min_rating:
-    min_rating = float('-inf')
-  books_query = Book.select(lambda book: book.rating >= min_rating and book.pages <= max_pages)
-  return [book.to_dict() for book in books_query]
+def db_create_airbnb(title, name, neighbourhood, neighbourhood_group, verified,
+                     year):
+    cursor.execute(
+        "INSERT INTO airbnbs (title, host_name, neighbourhood, neighbourhood_group, verified, year) VALUES (%s, %s, %s, %s, %s, %s) RETURNING id",
+        (title, name, neighbourhood, neighbourhood_group, verified, year))
+    result = cursor.fetchall()
+    return result
 
-@db_session
-def db_change_author(id, new_author):
-  book = Book.get(id=id)
-  book.author = new_author 
-  return book.to_dict()
 
-@db_session
-def db_delete_book(id):
-  book = Book.get(id=id)
-  book_dict = book.to_dict()
-  book.delete()
-  return book_dict
+def db_update_title(id, new_title):
+    cursor.execute("UPDATE airbnbs SET title = %s WHERE id = %s",
+                   (new_title, id))
+    result = cursor.fetchall()
+    return result
+
+
+def db_delete_listing(id):
+    cursor.execute("DELETE FROM airbnbs WHERE id = %s", (id, ))
+    result = cursor.fetchall()
+    return result
+
 
 # Routes!
 @app.route('/', methods=['GET'])
 def index():
-    return jsonify(db_get_all_books())
+    return jsonify(db_get_all())
+
 
 @app.route("/<id>", methods=['GET'])
-@db_session
-def get_book(id):
-  book = Book.get(id=id)
-  if not book:
-     return jsonify({"error": "invalid id"})
-  return jsonify(Book.get(id=id).to_dict())
+def get_by_id(id):
+    airbnb = db_get_by_id(id)
+    if not airbnb:
+        return jsonify({"error": "invalid id", "code": 404})
+    return jsonify(airbnb)
+
 
 @app.route("/search", methods=['GET'])
-def search_books():
-  result = db_filter_books(int(request.args.get('max_pages')), int(request.args.get('min_rating')))
-  return jsonify(result)
+def filter_listings():
+    result = db_filter_listings(int(request.args.get('min_year')),
+                                request.args.get('group'))
+    return jsonify(result)
+
 
 @app.route("/", methods=['POST'])
-def create_book():
-  new_book = request.json
-  try:
-    db_create_book(new_book['title'], new_book['author'], new_book['rating'], new_book['pages'])
-  except:
-    return jsonify({"error": "could not create this book"})
-  return jsonify(new_book)
+def create_airbnb():
+    new_airbnb = request.json
+    try:
+        res = db_create_airbnb(new_airbnb['title'], new_airbnb['name'],
+                               new_airbnb['neighbourhood'],
+                               new_airbnb['neighbourhood_group'],
+                               new_airbnb['verified'], new_airbnb['year'])
+        return jsonify(res)
+
+    except Exception as e:
+        return jsonify({"error": str(e)})
+
 
 @app.route("/<id>", methods=['PUT'])
-def update_author(id):
-  try:
-    author = request.json['author']
-    return jsonify(db_change_author(id, author))
-  except:
-    return jsonify({"error": "could not update book"})
+def update_title(id):
+    try:
+        title = request.json['title']
+        return jsonify(db_update_title(id, title))
+    except Exception as e:
+        return jsonify({"error": str(e)})
+
 
 @app.route("/<id>", methods=['DELETE'])
 def delete_book(id):
-  try:
-    return jsonify(db_delete_book(id))
-  except:
-    return jsonify({"error": "could not delete book"})
+    try:
+        return jsonify({"id": id})
+    except Exception as e:
+        return jsonify({"error": str(e)})
 
-"""
-End of Part 7 Code
-"""
-
-"""
-Parts 2-5 - Building an API without a Database
-"""
-
-# # Books stored in memory in a Python dictionary
-# books = {
-#   0: {'id': 0,
-#     'title': 'Harry Potter and the Chamber of Secrets (Harry Potter #2)',
-#     'author': 'J.K. Rowling',
-#     'rating': 4.42,
-#     'pages': 352},
-#   1: {'id': 1,
-#     'title': 'The Fellowship of the Ring (The Lord of the Rings #1)',
-#     'author': 'J.R.R. Tolkien',
-#     'rating': 4.36,
-#     'pages': 398},
-#   2: {'id': 2,
-#     'title': 'Treasure Island',
-#     'author': 'Robert Louis Stevenson',
-#     'rating': 3.83,
-#     'pages': 311}
-# }
-
-# # Part 3 - Get Requests
-# @app.route('/', methods=['GET'])
-# def index():
-#     return jsonify([books[book_id] for book_id in books])
-
-# # Request Params Example
-# @app.route("/<id>", methods=['GET'])
-# def get_book(id):
-#     if int(id) not in books:
-#       return jsonify({"error": "invalid id"})
-#     return jsonify(books[int(id)])
-
-# # Route Params Example
-# @app.route("/search", methods=['GET'])
-# def search_books():
-#   result = []
-
-#   for book_id, book in books.items():
-#     if request.args.get('max_pages'):
-#       if book['pages'] > int(request.args.get('max_pages')):
-#         continue
-
-#     if request.args.get('min_rating'):
-#       if book['rating'] < int(request.args.get('min_rating')):
-#         continue
-
-#     result.append(book)
-#   return jsonify(result)
-
-# # Part 4 - Post Requests
-# @app.route("/", methods=['POST'])
-# def create_book():
-#   new_book = request.json
-#   if new_book['id'] in books:
-#     return jsonify({"error": "book with that id already exists"})
-
-#   books[new_book['id']] = new_book
-#   return jsonify(new_book)
-
-# # Part 5 - Put and Delete Requests
-# @app.route("/<id>", methods=['PUT'])
-# def update_author(id):
-#   if int(id) not in books:
-#     return jsonify({"error": "invalid id"})
-#   books[int(id)]['author'] = request.json['author']
-
-#   return jsonify(books[int(id)])
-
-# @app.route("/<id>", methods=['DELETE'])
-# def delete_book(id):
-#   if int(id) not in books:
-#     return jsonify({"error": "invalid id"})
-#   deleted_book = books[int(id)]
-#   del books[int(id)]
-#   return jsonify(deleted_book)
-
-"""
-End of Parts 2-5
-"""
 
 # Runs the API and exposes it on https://<repl name>.<replit username>.repl.co
 # ex. Mine deploys to https://htn-api.jayantsh.repl.co.
-app.run(
-  host = "0.0.0.0",
-  debug = True
-)
-
-
-
-
+app.run(host="0.0.0.0", debug=True)
