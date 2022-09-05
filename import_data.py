@@ -29,7 +29,7 @@ cursor = connection.cursor()
 # $319 ,$64 ,1,160,6/9/2019,1.33,3,4,1,,
 
 cursor.execute(
-    "CREATE TABLE airbnbs (id INT PRIMARY KEY, title STRING, neighbourhood_group STRING, neighbourhood STRING, host_name STRING, verified BOOL, year INT)"
+    "CREATE TABLE airbnbs (id SERIAL PRIMARY KEY, title STRING, neighbourhood_group STRING, neighbourhood STRING, host_name STRING, verified BOOL, year INT)"
 )
 
 with open("airbnbs.csv", "r") as f:
