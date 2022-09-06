@@ -67,7 +67,7 @@ def db_create_airbnb(title, name, neighbourhood, neighbourhood_group, verified,
 
 
 def db_update_title(id, new_title):
-    cursor.execute("UPDATE airbnbs SET title = %s WHERE id = %s",
+    cursor.execute("UPDATE airbnbs SET title = %s WHERE id = %s RETURNING id",
                    (new_title, id))
     result = cursor.fetchall()
     return result
