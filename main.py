@@ -74,7 +74,7 @@ def db_update_title(id, new_title):
 
 
 def db_delete_listing(id):
-    cursor.execute("DELETE FROM airbnbs WHERE id = %s", (id, ))
+    cursor.execute("DELETE FROM airbnbs WHERE id = %s RETURNING id", (id, ))
     result = cursor.fetchall()
     return result
 
@@ -118,6 +118,7 @@ def create_airbnb():
 def update_title(id):
     try:
         title = request.json['title']
+      
         return jsonify(db_update_title(id, title))
     except Exception as e:
         return jsonify({"error": str(e)})
@@ -126,7 +127,7 @@ def update_title(id):
 @app.route("/<id>", methods=['DELETE'])
 def delete_book(id):
     try:
-        return jsonify({"id": id})
+        return jsonify(db_delete_listing(id))
     except Exception as e:
         return jsonify({"error": str(e)})
 
