@@ -36,8 +36,9 @@ with open("airbnbs.csv", "r") as f:
     lines = f.readlines()
   
     # Print the column names
-    print(lines[0][0], lines[0][1], lines[0][5], lines[0][6], lines[0][4],
-              lines[0][3] == "verified", lines[0][14])
+    first_line = lines[0].strip().split(',')
+    print(first_line[0], first_line[1], first_line[5], first_line[6], first_line[4],
+              first_line[3] == "verified", first_line[14])
   
     for line in lines[1:]:
         parts = line.strip().split(',')
