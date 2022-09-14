@@ -11,6 +11,6 @@ new_airbnb = {
 }
 
 
-response = requests.post('https://htn-cockroachdb-workshop-2022.jayantsh.repl.co', json = new_airbnb)
+response = requests.post('https://htn-cockroachdb-workshop.jayantsh.repl.co', json = new_airbnb)
 
 print(json.dumps(response.json(), indent=2))
