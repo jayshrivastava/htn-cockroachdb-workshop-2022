@@ -26,7 +26,7 @@ connection.set_session(autocommit=True)
 cursor = connection.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
 """
 CREATE TABLE airbnbs (
-  id INT PRIMARY KEY, 
+  id SERIAL PRIMARY KEY, 
   title STRING, 
   neighbourhood_group STRING, 
   neighbourhood STRING, 
