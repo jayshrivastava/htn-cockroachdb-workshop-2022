@@ -1,17 +1,7 @@
 import os
 from pony.orm import Database, PrimaryKey, Required, sql_debug, db_session
 
-user = os.environ["USERNAME"]
-host = os.environ['HOST']
-cluster = os.environ["CLUSTER"]
-password = os.environ["DATABASE_PW"]
-
-db_params = dict(provider='cockroach',
-                 user=user,
-                 host=host,
-                 port=26257,
-                 database=f'{cluster}.defaultdb',
-                 password=password)
+pg_conn_string = os.environ["PG_CONN_STRING"]
 
 db = Database()
 
@@ -25,8 +15,7 @@ class Book(db.Entity):
     pages = Required(int)
 
 
-db.bind(**db_params)  # Bind Database object to the real database
-
+db.bind('postgres', pg_conn_string)  # Bind Database object to the real database
 # Create tables if they do not exist. Noop if they do exist
 db.generate_mapping(create_tables=True)
 

@@ -8,17 +8,10 @@ import psycopg2.extras
 app = Flask(__name__)
 
 # Create a cursor and initialize psycopg
-user = os.environ["USERNAME"]
-host = os.environ['HOST']
-cluster = os.environ["CLUSTER"]
-password = os.environ["DATABASE_PW"]
+pg_conn_string = os.environ["PG_CONN_STRING"]
 
-connection = psycopg2.connect(user=user,
-                              host=host,
-                              port=26257,
-                              database=f'{cluster}.defaultdb',
-                              password=password,
-                              sslmode='verify-full')
+connection = psycopg2.connect(pg_conn_string)
+
 
 # Set to automatically commit each statement
 connection.set_session(autocommit=True)

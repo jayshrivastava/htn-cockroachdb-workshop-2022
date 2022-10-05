@@ -2,17 +2,8 @@ import os
 import psycopg2
 
 # Create a cursor.
-user = os.environ["USERNAME"]
-host = os.environ['HOST']
-cluster = os.environ["CLUSTER"]
-password = os.environ["DATABASE_PW"]
-
-connection = psycopg2.connect(user=user,
-                              host=host,
-                              port=26257,
-                              database=f'{cluster}.defaultdb',
-                              password=password,
-                              sslmode='verify-full')
+pg_conn_string = os.environ["PG_CONN_STRING"]
+connection = psycopg2.connect(pg_conn_string)
 
 cursor = connection.cursor()
 
@@ -91,7 +82,7 @@ def add_course_with_named_params():
   }
   cursor.execute("INSERT INTO courses VALUES (default, %(name)s, %(program)s, %(code)s)", data)
 
-# create_tables()
+create_tables()
 # insert_data()
 # update_rows()
 # delete_rows()
