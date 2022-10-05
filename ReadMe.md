@@ -10,19 +10,19 @@ Prerequisites: Python Basics
 
 Target: Beginner
 
-Stack
-Python Flask
-Psycopg
-PonyORM
-CockroachDB Serverless
-Repl.it
+Stack  
+Python Flask  
+Psycopg  
+PonyORM  
+CockroachDB Serverless  
+Repl.it  
 
-Concepts
-Building a REST API using Python and Flask
-Intro to SQL
-Intro to ORMs
-Setting up CockroachDB Serverless
-Importing data from CSV
+Concepts  
+Building a REST API using Python and Flask  
+Intro to SQL  
+Intro to ORMs  
+Setting up CockroachDB Serverless  
+Importing data from CSV  
 
 
 ### Setup
