@@ -1,6 +1,6 @@
 ## Intro to API Development
 
-In this workshop, we’ll walk you through getting started with CockroachDB Serverless and provide an introduction to SQL and ORMs. Then you’ll learn from one of our many Waterloo alums how to build a RESTful API using Python. This workshop will be hands on, so bring your laptops. You’ll leave with a working API powered by [CockroachDB Serverless](https://cockroa.ch/htn22)!
+In this workshop, we’ll walk you through getting started with CockroachDB Serverless and provide an introduction to SQL and ORMs. Then you’ll learn from one of our many Waterloo alums how to build a RESTful API using Python. This workshop will be hands on, so bring your laptops. You’ll leave with a working API powered by [CockroachDB Serverless](https://cockroachlabs.cloud/signup)!
 
 The complete workshop/guide is published at https://cockroa.ch/htn22-workshop-guide
 
