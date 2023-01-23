@@ -94,7 +94,7 @@ python-versions = ">=3.6"
 
 [[package]]
 name = "pony"
-version = "0.7.14"
+version = "0.7.16"
 description = "Pony Object-Relational Mapper"
 category = "main"
 optional = false
