@@ -32,7 +32,7 @@ Source Code: [https://github.com/jayshrivastava/htn-cockroachdb-workshop-2022](h
 - Please open Github issues if you find bugs in the code or even in this Notion page
 - Feel free to ⭐ it if you liked the workshop!
 
-Slides: [CRDB Workshop 2022](https://docs.google.com/presentation/d/1J2cWQpb0yg40C8748OC2KlsxN3CLE5WU95peLOd7rZw/edit?usp=drivesdk)
+Slides: [CRDB Workshop 2022](slides.pdf)
 
 <details> 
 <br>
